@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的日记 - SUPERSRUI的小站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --color-primary: #6C63FF;
+            --color-secondary: #FF6584;
+            --color-accent: #36D1DC;
+            --color-light: #F8F9FA;
+            --color-dark: #333333;
+            --color-bg: #ffffff;
+            --color-text: #333333;
+        }
+        
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        /* 动态背景元素 */
+        .floating-circle {
+            position: fixed;
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.7;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            33% { transform: translateY(-20px) rotate(120deg) scale(1.1); }
+            66% { transform: translateY(10px) rotate(240deg) scale(0.9); }
+        }
+        
+        .floating-shape {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.5;
+            animation: drift 20s infinite linear;
+        }
+        
+        @keyframes drift {
+            0% { transform: translateX(0) rotate(0deg); }
+            100% { transform: translateX(100vw) rotate(360deg); }
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background-color: rgba(108, 99, 255, 0.95);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--color-accent);
+            margin-left: 5px;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 5px;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--color-accent);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a.active {
+            color: var(--color-accent);
+        }
+        
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        /* 日记页面标题 */
+        .page-title {
+            text-align: center;
+            padding: 80px 0 40px;
+            position: relative;
+        }
+        
+        .page-title h1 {
+            font-size: 3.5rem;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page-title p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* 日记筛选 */
+        .diary-filters {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            padding: 8px 20px;
+            background: white;
+            border: 2px solid var(--color-primary);
+            border-radius: 30px;
+            color: var(--color-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        /* 日记网格 */
+        .diary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .diary-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .diary-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .diary-card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            position: relative;
+        }
+        
+        .diary-date {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .diary-date i {
+            margin-right: 10px;
+        }
+        
+        .diary-day {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .diary-card-content {
+            padding: 20px;
+        }
+        
+        .diary-card-content p {
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .diary-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .diary-tag {
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--color-primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .read-more-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .read-more-btn:hover {
+            background: var(--color-secondary);
+            transform: translateY(-2px);
+        }
+        
+        /* 单个日记展开视图 */
+        .diary-expanded {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 50px;
+            display: none;
+        }
+        
+        .diary-expanded.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .diary-expanded-header {
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .diary-expanded-title {
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+        
+        .diary-expanded-content {
+            line-height: 1.8;
+        }
+        
+        .diary-expanded-content p {
+            margin-bottom: 20px;
+        }
+        
+        .back-to-list {
+            display: inline-flex;
+            align-items: center;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 30px;
+            transition: all 0.3s;
+        }
+        
+        .back-to-list i {
+            margin-right: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .back-to-list:hover i {
+            transform: translateX(-5px);
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--color-dark);
+            color: white;
+            padding: 40px 0 20px;
+            text-align: center;
+            position: relative;
+            margin-top: 80px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .social-links a::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+        
+        .social-links a:hover::before {
+            opacity: 1;
+        }
+        
+        .social-links a:hover {
+            transform: translateY(-5px) rotate(5deg);
+        }
+        
+        .copyright {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .page-title h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--color-primary);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                transition: transform 0.3s;
+                z-index: 99;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+            .diary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .diary-expanded-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* 移动菜单按钮 */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 101;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-secondary);
+        }
+        
+        /* 星空背景效果 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态背景元素 -->
+    <div class="stars"></div>
+    <div class="floating-circles-container"></div>
+    <div class="floating-shapes-container"></div>
+    
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-rocket"></i>
+                    SUPER<span>SRUI</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="#" class="active">我的日记</a></li>
+                    <li><a href="index.html#interests">兴趣爱好</a></li>
+                    <li><a href="index.html#about">关于我</a></li>
+                </ul>
+                <button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 日记页面标题 -->
+    <section class="page-title">
+        <div class="container">
+            <h1>我的日记本</h1>
+            <p>记录我的生活点滴、思考和成长历程</p>
+        </div>
+    </section>
+
+    <!-- 日记筛选    生活是school，思考是thoughts，爱好是hobbies-->
+    <div class="container">
+        <div class="diary-filters">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="school">我的生活</button>
+            <button class="filter-btn" data-filter="thoughts">思考感悟</button>
+            <button class="filter-btn" data-filter="hobbies">兴趣爱好</button>
+        </div>
+    </div>
+
+    <!-- 日记网格 -->
+    <div class="container">
+        <div class="diary-grid">
+            <!-- 日记卡片 1 -->
+            <div class="diary-card" data-category="school">
+                <div class="diary-card-header">
+                    <div class="diary-date">
+                        <i class="far fa-calendar-alt"></i>
+                        2025年8月26日
+                    </div>
+                    <div class="diary-day">星期2️⃣</div>
+                </div>
+                <div class="diary-card-content">
+                    <div class="diary-tags">
+                        <span class="diary-tag">网站</span>
+                        <span class="diary-tag">开心😄</span>
+                    </div>
+                    <p>嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻</p>
+                    <a href="#" class="read-more-btn" data-diary-id="1">阅读全文</a>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+
+    <!-- 单个日记展开视图 -->
+    <div class="container">
+        <div class="diary-expanded" id="diary-expanded">
+            <div class="diary-expanded-header">
+                <h2 class="diary-expanded-title" id="expanded-title">日记标题</h2>
+                <div class="diary-date">
+                    <i class="far fa-calendar-alt"></i>
+                    <span id="expanded-date">2023年10月15日 星期日</span>
+                </div>
+                <div class="diary-tags" id="expanded-tags">
+                    <span class="diary-tag">标签</span>
+                </div>
+            </div>
+            <div class="diary-expanded-content" id="expanded-content">
+                <p>日记内容加载中...</p>
+            </div>
+            <a href="#" class="back-to-list" id="back-to-list">
+                <i class="fas fa-arrow-left"></i> 返回日记列表
+            </a>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-weibo"></i></a>
+                <a href="#"><i class="fab fa-qq"></i></a>
+                <a href="#"><i class="fab fa-weixin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <p class="copyright">© 2023 SUPERSRUI的小站. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 日记数据
+        const diaryData = {
+            1: {
+                title: "第一篇文章",
+                date: "2025年8月26日 星期二",
+                tags: ["网站", "开心😄"],
+                content: `
+                    <p>你好啊，欢迎来到我的网站！</p>
+                    <p>后续我会在这里更新更多内容，敬请期待哦</p>    
+            
+                `
+            },
+            
+        };
+
+        // 创建动态背景元素
+        function createBackgroundElements() {
+            // 创建星星
+            const starsContainer = document.querySelector('.stars');
+            const starCount = 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
+            }
+            
+            // 创建浮动圆圈
+            const circlesContainer = document.querySelector('.floating-circles-container');
+            const circleCount = 10;
+            
+            for (let i = 0; i < circleCount; i++) {
+                const circle = document.createElement('div');
+                circle.classList.add('floating-circle');
+                
+                const size = Math.random() * 100 + 50;
+                circle.style.width = `${size}px`;
+                circle.style.height = `${size}px`;
+                circle.style.left = `${Math.random() * 100}vw`;
+                circle.style.top = `${Math.random() * 100}vh`;
+                
+                const colors = [
+                    'rgba(108, 99, 255, 0.1)',
+                    'rgba(255, 101, 132, 0.1)',
+                    'rgba(54, 209, 220, 0.1)'
+                ];
+                circle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                circle.style.animationDelay = `${Math.random() * 5}s`;
+                circle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                
+                circlesContainer.appendChild(circle);
+            }
+            
+            // 创建浮动形状
+            const shapesContainer = document.querySelector('.floating-shapes-container');
+            const shapeCount = 5;
+            
+            for (let i = 0; i < shapeCount; i++) {
+                const shape = document.createElement('div');
+                shape.classList.add('floating-shape');
+                
+                const size = Math.random() * 80 + 40;
+                shape.style.width = `${size}px`;
+                shape.style.height = `${size}px`;
+                shape.style.top = `${Math.random() * 100}vh`;
+                
+                // 随机形状
+                if (Math.random() > 0.5) {
+                    shape.style.borderRadius = '50%';
+                } else {
+                    shape.style.borderRadius = '20%';
+                }
+                
+                const colors = [
+                    'rgba(108, 99, 255, 0.15)',
+                    'rgba(255, 101, 132, 0.15)',
+                    'rgba(54, 209, 220, 0.15)'
+                ];
+                shape.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                shape.style.animationDelay = `${Math.random() * 5}s`;
+                shape.style.animationDuration = `${Math.random() * 30 + 30}s`;
+                
+                shapesContainer.appendChild(shape);
+            }
+        }
+        
+        // 初始化日记功能
+        function initDiaryFunctions() {
+            // 日记筛选
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const diaryCards = document.querySelectorAll('.diary-card');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // 更新按钮状态
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const filter = button.getAttribute('data-filter');
+                    
+                    // 筛选日记
+                    diaryCards.forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                            card.style.display = 'block';
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, 10);
+                        } else {
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(20px)';
+                            setTimeout(() => {
+                                card.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+            
+            // 日记展开功能
+            const readMoreButtons = document.querySelectorAll('.read-more-btn');
+            const diaryExpanded = document.getElementById('diary-expanded');
+            const expandedTitle = document.getElementById('expanded-title');
+            const expandedDate = document.getElementById('expanded-date');
+            const expandedTags = document.getElementById('expanded-tags');
+            const expandedContent = document.getElementById('expanded-content');
+            const backToList = document.getElementById('back-to-list');
+            
+            readMoreButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const diaryId = button.getAttribute('data-diary-id');
+                    const diary = diaryData[diaryId];
+                    
+                    if (diary) {
+                        // 更新展开的日记内容
+                        expandedTitle.textContent = diary.title;
+                        expandedDate.textContent = diary.date;
+                        
+                        // 更新标签
+                        expandedTags.innerHTML = '';
+                        diary.tags.forEach(tag => {
+                            const tagElement = document.createElement('span');
+                            tagElement.classList.add('diary-tag');
+                            tagElement.textContent = tag;
+                            expandedTags.appendChild(tagElement);
+                        });
+                        
+                        // 更新内容
+                        expandedContent.innerHTML = diary.content;
+                        
+                        // 显示展开的日记
+                        diaryExpanded.classList.add('active');
+                        
+                        // 滚动到展开的日记
+                        diaryExpanded.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+            
+            // 返回列表功能
+            backToList.addEventListener('click', (e) => {
+                e.preventDefault();
+                diaryExpanded.classList.remove('active');
+                
+                // 滚动回顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+        
+        // 导航菜单切换
+        function setupNavigation() {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    this.querySelector('i').classList.toggle('fa-bars');
+                    this.querySelector('i').classList.toggle('fa-times');
+                });
+            }
+            
+            // 点击导航链接后关闭移动菜单
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    if (menuToggle) {
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                    }
+                });
+            });
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createBackgroundElements();
+            initDiaryFunctions();
+            setupNavigation();
+            
+            // 滚动时导航栏效果
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
+                    header.style.background = 'rgba(108, 99, 255, 0.98)';
+                } else {
+                    header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                    header.style.background = 'rgba(108, 99, 255, 0.95)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
