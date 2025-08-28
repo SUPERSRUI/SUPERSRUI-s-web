@@ -538,6 +538,28 @@
     <!-- 日记网格 -->
     <div class="container">
         <div class="diary-grid">
+          
+          
+          
+          
+            <!-- 日记卡片 2 -->
+            <div class="diary-card" data-category="school">
+                <div class="diary-card-header">
+                    <div class="diary-date">
+                        <i class="far fa-calendar-alt"></i>
+                        2025年8月28日
+                    </div>
+                    <div class="diary-day">星期④</div>
+                </div>
+                <div class="diary-card-content">
+                    <div class="diary-tags">
+                        <span class="diary-tag">电脑</span>
+                        <span class="diary-tag">无语</span>
+                    </div>
+                    <p>电脑你怎么倒下了啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>
+                    <a href="#" class="read-more-btn" data-diary-id="2">阅读全文</a>
+                </div>
+            </div>
             <!-- 日记卡片 1 -->
             <div class="diary-card" data-category="school">
                 <div class="diary-card-header">
@@ -556,6 +578,9 @@
                     <a href="#" class="read-more-btn" data-diary-id="1">阅读全文</a>
                 </div>
             </div>
+            
+            
+  
             
             
         </div>
@@ -599,10 +624,22 @@
     <script>
         // 日记数据
         const diaryData = {
+            2: {
+                title: "电脑の牺牲",
+                date: "2025年8月28日 星期四",
+                tags: ["无语"],
+                content: `
+                    <p>当我正在为网站修bug的时候，电脑似乎对长时间的工作不耐烦，屏幕内容刷的一下变成了几个色块。</p>
+                    <p>"我的文件啊！还没保存呢！T^T"</p>    
+                    <p>没办法，只能怀着沉痛的心情重新开机。</p>
+                    <p>可是屋漏偏逢连夜雨，点亮开机键后屏幕始终没有亮起。我不甘心，但几次开机无果后，我也只能沉重宣告电脑的死亡</p>
+                    <p>哎，困难与生活相伴相随。我所能做的也只有平静接受了。</p>
+                `
+            },
             1: {
                 title: "第一篇文章",
                 date: "2025年8月26日 星期二",
-                tags: ["网站", "开心😄"],
+                tags: [ "开心😄"],
                 content: `
                     <p>你好啊，欢迎来到我的网站！</p>
                     <p>后续我会在这里更新更多内容，敬请期待哦</p>    
