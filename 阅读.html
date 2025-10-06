@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阅读爱好 - SUPERSRUI的小站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --color-primary: #6C63FF;
+            --color-secondary: #FF6584;
+            --color-accent: #36D1DC;
+            --color-light: #F8F9FA;
+            --color-dark: #333333;
+            --color-bg: #ffffff;
+            --color-text: #333333;
+        }
+        
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* 动态背景元素 */
+        .bubble {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(108, 99, 255, 0.1);
+            z-index: -1;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏样式 - 优化版 */
+        header {
+            background-color: rgba(108, 99, 255, 0.95);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--color-accent);
+            margin-left: 5px;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 5px;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--color-accent);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a.active {
+            color: var(--color-accent);
+        }
+        
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        /* 微信头像样式 */
+        .wechat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid white;
+            margin-left: 25px;
+            transition: all 0.3s;
+        }
+        
+        .wechat-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .wechat-avatar:hover {
+            transform: scale(1.1);
+            border-color: var(--color-accent);
+            box-shadow: 0 0 10px rgba(54, 209, 220, 0.5);
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            padding: 120px 0 80px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-title h1 {
+            font-size: 4rem;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.8);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .page-title p {
+            font-size: 1.4rem;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* 阅读内容区域 */
+        .reading-content {
+            padding: 80px 0;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-size: 2.8rem;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            bottom: -10px;
+            left: 20%;
+            border-radius: 2px;
+        }
+        
+        /* 不对称网格布局 */
+        .reading-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+        
+        .reading-card {
+            background-color: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .reading-card:nth-child(odd) {
+            transform: rotate(-2deg);
+        }
+        
+        .reading-card:nth-child(even) {
+            transform: rotate(2deg);
+        }
+        
+        .reading-card:hover {
+            transform: translateY(-15px) rotate(0deg) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .reading-card-header {
+            padding: 25px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .reading-card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+        }
+        
+        .reading-card-header h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .reading-card-content {
+            padding: 25px;
+            position: relative;
+        }
+        
+        .reading-card-content p {
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+        
+        /* 书籍展示 */
+        .books-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+        
+        .book-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .book-cover {
+            height: 300px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .book-card:hover .book-cover::before {
+            transform: translateX(100%);
+        }
+        
+        .book-cover i {
+            font-size: 4rem;
+            color: var(--color-primary);
+            opacity: 0.7;
+        }
+        
+        .book-info {
+            padding: 20px;
+        }
+        
+        .book-info h3 {
+            margin-bottom: 10px;
+            color: var(--color-primary);
+            font-size: 1.4rem;
+        }
+        
+        .book-info p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        /* 阅读名言 */
+        .quote-section {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            padding: 60px 0;
+            margin: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quote-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .quote-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .quote-content blockquote {
+            font-size: 1.8rem;
+            font-style: italic;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .quote-content cite {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--color-dark);
+            color: white;
+            padding: 50px 0 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .social-links a::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+        
+        .social-links a:hover::before {
+            opacity: 1;
+        }
+        
+        .social-links a:hover {
+            transform: translateY(-5px) rotate(5deg);
+        }
+        
+        .copyright {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .page-title h1 {
+                font-size: 2.8rem;
+            }
+            
+            .page-title p {
+                font-size: 1.2rem;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--color-primary);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                transition: transform 0.3s;
+                z-index: 99;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+            .reading-grid, .books-showcase {
+                grid-template-columns: 1fr;
+            }
+            
+            .reading-card:nth-child(odd), 
+            .reading-card:nth-child(even) {
+                transform: none;
+            }
+            
+            .reading-card:hover {
+                transform: translateY(-10px) scale(1.02);
+            }
+            
+            .quote-content blockquote {
+                font-size: 1.5rem;
+            }
+            
+            /* 移动端隐藏微信头像 */
+            .wechat-avatar {
+                display: none;
+            }
+        }
+        
+        /* 移动菜单按钮 */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 101;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态背景气泡 -->
+    <div class="bubbles-container"></div>
+    
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-rocket"></i>
+                    SUPER<span>SRUI</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="日记.html">我的日记</a></li>
+                    <li><a href="#" class="active">兴趣爱好</a></li>
+                    <li><a href="index.html#about">关于我</a></li>
+                    <!-- 添加微信头像 -->
+                    <li class="wechat-avatar-item">
+                        <div class="wechat-avatar">
+                            <img src="我的头像.jpg" alt="微信头像">
+                        </div>
+                    </li>
+                </ul>
+                <button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 页面标题 -->
+    <section class="page-title">
+        <div class="container">
+            <h1>阅读</h1>
+            <p>在书海中遨游，探索知识的无限可能</p>
+        </div>
+    </section>
+
+    <!-- 阅读内容区域 -->
+    <section class="reading-content">
+        <div class="container">
+            <!-- 阅读类型介绍 -->
+            <div class="section-title">
+                <h2>我的阅读偏好</h2>
+            </div>
+            
+            <div class="reading-grid">
+                <div class="reading-card">
+                    <div class="reading-card-header">
+                        <h3>科幻小说</h3>
+                        <p>探索未知的宇宙与未来</p>
+                    </div>
+                    <div class="reading-card-content">
+                        <p>科幻小说让我能够跳出日常生活的框架，思考人类在宇宙中的位置和未来发展的可能性。</p>
+                        <p>我喜欢刘慈欣的《三体》，这些作品不仅情节引人入胜，更蕴含着深刻的哲学思考。</p>
+                    </div>
+                </div>
+                
+                <div class="reading-card">
+                    <div class="reading-card-header">
+                        <h3>历史传记</h3>
+                        <p>从过去汲取智慧</p>
+                    </div>
+                    <div class="reading-card-content">
+                        <p>通过阅读历史传记，我能够了解不同时代的人物和事件，从中汲取人生智慧和历史教训。</p>
+                        <p>《秦汉 帝国兴亡》是我近期最喜欢的作品，它以独特的视角解读历史，让人耳目一新。</p>
+                    </div>
+                </div>
+                
+                
+                </div>
+            </div>
+            
+            <!-- 推荐书籍 -->
+            <div class="section-title">
+                <h2>近期阅读推荐</h2>
+            </div>
+            
+            <div class="books-showcase">
+                <div class="book-card">
+                    <div class="book-cover">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="book-info">
+                        <h3>三体</h3>
+                        <p>刘慈欣 · 科幻小说</p>
+                        <p>一部宏大的科幻史诗，探讨了人类文明与外星文明的接触与冲突。</p>
+                    </div>
+                </div>
+                
+                <div class="book-card">
+                    <div class="book-cover">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="book-info">
+                        <h3>人类简史</h3>
+                        <p>尤瓦尔·赫拉利 · 历史</p>
+                        <p>从认知革命到科技革命，重新审视人类历史的宏大叙事。</p>
+                    </div>
+                </div>
+                
+                <div class="book-card">
+                    <div class="book-cover">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="book-info">
+                        <h3>时间简史</h3>
+                        <p>史蒂芬·霍金 · 科普</p>
+                        <p>探索宇宙的起源、黑洞和时间旅行的可能性，通俗易懂的宇宙学入门。</p>
+                    </div>
+                </div>
+                
+                <div class="book-card">
+                    <div class="book-cover">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="book-info">
+                        <h3>百年孤独</h3>
+                        <p>加西亚·马尔克斯 · 文学</p>
+                        <p>魔幻现实主义的经典之作，讲述了布恩迪亚家族七代人的传奇故事。（有点猎奇）</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 阅读名言 -->
+            <div class="quote-section">
+                <div class="container">
+                    <div class="quote-content">
+                        <blockquote>"阅读是一座随身携带的避难所。"</blockquote>
+                        <cite>—— 毛姆</cite>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-weibo"></i></a>
+                <a href="#"><i class="fab fa-qq"></i></a>
+                <a href="#"><i class="fab fa-weixin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <p class="copyright">© 2025 SUPERSRUI的小站. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 创建动态背景气泡
+        function createBubbles() {
+            const container = document.querySelector('.bubbles-container');
+            const bubbleCount = 15;
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // 随机大小和位置
+                const size = Math.random() * 100 + 20;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${Math.random() * 100}vw`;
+                bubble.style.top = `${Math.random() * 100}vh`;
+                
+                // 随机颜色
+                const colors = [
+                    'rgba(108, 99, 255, 0.1)',
+                    'rgba(255, 101, 132, 0.1)',
+                    'rgba(54, 209, 220, 0.1)'
+                ];
+                bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                // 随机动画延迟和持续时间
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                bubble.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                
+                container.appendChild(bubble);
+            }
+        }
+        
+        // 导航菜单切换
+        function setupNavigation() {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    this.querySelector('i').classList.toggle('fa-bars');
+                    this.querySelector('i').classList.toggle('fa-times');
+                });
+            }
+            
+            // 点击导航链接后关闭移动菜单
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    if (menuToggle) {
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                    }
+                });
+            });
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createBubbles();
+            setupNavigation();
+            
+            // 滚动时导航栏效果
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
+                    header.style.background = 'rgba(108, 99, 255, 0.98)';
+                } else {
+                    header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                    header.style.background = 'rgba(108, 99, 255, 0.95)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
