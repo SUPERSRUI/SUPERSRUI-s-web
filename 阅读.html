@@ -220,14 +220,15 @@
         }
         
         .reading-card {
-            background-color: white;
+            background-color: #f8f9fa; /* 改为浅灰色背景，提高对比度 */
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* 增加阴影深度 */
             transition: all 0.4s ease;
             position: relative;
             transform-style: preserve-3d;
             perspective: 1000px;
+            border: 1px solid #e9ecef; /* 添加边框增强区分 */
         }
         
         .reading-card:nth-child(odd) {
@@ -240,7 +241,7 @@
         
         .reading-card:hover {
             transform: translateY(-15px) rotate(0deg) scale(1.03);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); /* 增加阴影深度 */
         }
         
         .reading-card-header {
@@ -277,6 +278,7 @@
         .reading-card-content p {
             margin-bottom: 20px;
             font-size: 1.05rem;
+            color: #495057; /* 加深文字颜色 */
         }
         
         /* 书籍展示 */
@@ -288,22 +290,23 @@
         }
         
         .book-card {
-            background-color: white;
+            background-color: #f8f9fa; /* 改为浅灰色背景，提高对比度 */
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); /* 增加阴影深度 */
             transition: all 0.4s ease;
             position: relative;
+            border: 1px solid #e9ecef; /* 添加边框增强区分 */
         }
         
         .book-card:hover {
             transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18); /* 增加阴影深度 */
         }
         
         .book-cover {
             height: 300px;
-            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            background: linear-gradient(45deg, #e9ecef, #dee2e6); /* 加深背景色 */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -344,7 +347,7 @@
         }
         
         .book-info p {
-            color: #666;
+            color: #495057; /* 加深文字颜色 */
             margin-bottom: 15px;
             font-size: 0.95rem;
         }
@@ -358,6 +361,7 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* 增加阴影深度 */
         }
         
         .quote-section::before {
@@ -392,7 +396,7 @@
         
         /* 页脚 */
         footer {
-            background-color: var(--color-dark);
+            background-color: #212529; /* 加深页脚背景 */
             color: white;
             padding: 50px 0 20px;
             text-align: center;
@@ -413,7 +417,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.15); /* 增加透明度 */
             color: white;
             font-size: 1.2rem;
             transition: all 0.3s;
