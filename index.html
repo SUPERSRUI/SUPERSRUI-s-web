@@ -277,10 +277,10 @@
         }
         
         .interest-card {
-            background-color: white;
+            background-color: #f8f9fa; /* 改为浅灰色背景，提高对比度 */
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); /* 增加阴影深度 */
             transition: all 0.3s;
             position: relative;
             transform-style: preserve-3d;
@@ -288,11 +288,12 @@
             text-decoration: none;
             color: inherit;
             display: block;
+            border: 1px solid #e9ecef; /* 添加边框增强区分 */
         }
         
         .interest-card:hover {
             transform: translateY(-10px) rotateX(5deg);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* 增加阴影深度 */
         }
         
         .card-img {
@@ -335,6 +336,10 @@
             color: var(--color-primary);
         }
         
+        .card-content p {
+            color: #495057; /* 加深文字颜色 */
+        }
+        
         /* 日记预览区 */
         .diary-preview {
             background-color: #f8f9fa;
@@ -345,17 +350,18 @@
         .diary-container {
             max-width: 800px;
             margin: 0 auto;
-            background-color: white;
+            background-color: #f8f9fa; /* 改为浅灰色背景，提高对比度 */
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); /* 增加阴影深度 */
             position: relative;
+            border: 1px solid #e9ecef; /* 添加边框增强区分 */
         }
         
         .diary-entry {
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #dee2e6; /* 加深边框颜色 */
             transition: all 0.3s;
         }
         
@@ -383,6 +389,7 @@
         
         .diary-content {
             margin-bottom: 15px;
+            color: #495057; /* 加深文字颜色 */
         }
         
         .read-more {
@@ -412,6 +419,10 @@
         
         .about-text {
             flex: 1;
+        }
+        
+        .about-text p {
+            color: #495057; /* 加深文字颜色 */
         }
         
         .about-image {
@@ -454,7 +465,7 @@
         
         /* 页脚 */
         footer {
-            background-color: var(--color-dark);
+            background-color: #212529; /* 加深页脚背景 */
             color: white;
             padding: 50px 0 20px;
             text-align: center;
@@ -475,7 +486,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.15); /* 增加透明度 */
             color: white;
             font-size: 1.2rem;
             transition: all 0.3s;
