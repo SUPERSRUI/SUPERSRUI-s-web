@@ -222,17 +222,18 @@
         }
         
         .diary-card {
-            background: white;
+            background: #f8f9fa; /* 改为浅灰色背景，提高对比度 */
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); /* 增加阴影深度 */
             transition: all 0.3s;
             position: relative;
+            border: 1px solid #e9ecef; /* 添加边框增强区分 */
         }
         
         .diary-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* 增加阴影深度 */
         }
         
         .diary-card-header {
@@ -269,6 +270,7 @@
             -webkit-line-clamp: 4;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            color: #495057; /* 加深文字颜色 */
         }
         
         .diary-tags {
@@ -279,7 +281,7 @@
         }
         
         .diary-tag {
-            background: rgba(108, 99, 255, 0.1);
+            background: rgba(108, 99, 255, 0.15); /* 增加透明度 */
             color: var(--color-primary);
             padding: 5px 12px;
             border-radius: 20px;
@@ -305,12 +307,13 @@
         
         /* 单个日记展开视图 */
         .diary-expanded {
-            background: white;
+            background: #f8f9fa; /* 改为浅灰色背景，提高对比度 */
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); /* 增加阴影深度 */
             margin-bottom: 50px;
             display: none;
+            border: 1px solid #e9ecef; /* 添加边框增强区分 */
         }
         
         .diary-expanded.active {
@@ -324,7 +327,7 @@
         }
         
         .diary-expanded-header {
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid #dee2e6; /* 加深边框颜色 */
             padding-bottom: 20px;
             margin-bottom: 25px;
         }
@@ -341,6 +344,7 @@
         
         .diary-expanded-content p {
             margin-bottom: 20px;
+            color: #495057; /* 加深文字颜色 */
         }
         
         .back-to-list {
@@ -364,7 +368,7 @@
         
         /* 页脚 */
         footer {
-            background-color: var(--color-dark);
+            background-color: #212529; /* 加深页脚背景 */
             color: white;
             padding: 40px 0 20px;
             text-align: center;
@@ -386,7 +390,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.15); /* 增加透明度 */
             color: white;
             font-size: 1.2rem;
             transition: all 0.3s;
@@ -555,7 +559,7 @@
     <!-- 日记页面标题 -->
     <section class="page-title">
         <div class="container">
-            <h1>我的日记本</h1>
+            <h1>我的文章</h1>
             <p>记录我的生活点滴、思考和成长历程</p>
         </div>
     </section>
